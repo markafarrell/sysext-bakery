@@ -27,18 +27,18 @@ version: 1.0.0
 
 storage:
   files:
-    - path: /etc/extensions/rke2.raw
+    - path: /opt/extensions/rke2/rke2-v1.31.3+k3s1-x86-64.raw
       contents:
         source: https://github.com/flatcar/sysext-bakery/releases/download/latest/rke2-v1.31.1+rke2r1-x86-64.raw
     - path: /etc/sysupdate.rke2.d/rke2-v1.31.conf
       contents:
-        source: https://github.com/flatcar/sysext-bakery/releases/download/latest/rke2.conf
+        source: https://github.com/flatcar/sysext-bakery/releases/download/latest/rke2-v1.31.conf
     - path: /etc/sysupdate.d/noop.conf
       contents:
         source: https://github.com/flatcar/sysext-bakery/releases/download/latest/noop.conf
   links:
     - target: /opt/extensions/rke2/rke2-v1.31.3+k3s1-x86-64.raw
-      path: /etc/extensions/k3s.raw
+      path: /etc/extensions/rke2.raw
       hard: false
 
 systemd:
@@ -51,7 +51,7 @@ systemd:
           contents: |
             [Service]
             ExecStartPre=/usr/bin/sh -c "readlink --canonicalize /etc/extensions/rke2.raw > /tmp/rke2"
-            ExecStartPre=/usr/lib/systemd/systemd-sysupdate -C rke2-v1.31 update
+            ExecStartPre=/usr/lib/systemd/systemd-sysupdate -C rke2 update
             ExecStartPost=/usr/bin/sh -c "readlink --canonicalize /etc/extensions/rke2.raw > /tmp/rke2-new"
             ExecStartPost=/usr/bin/sh -c "if ! cmp --silent /tmp/rke2 /tmp/rke2-new; then touch /run/reboot-required; fi"
 ```
